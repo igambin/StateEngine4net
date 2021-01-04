@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq.Expressions;
-using IG.SimpleStateWithActions.StateEngineShared.Interfaces;
+using StateEngine4net.Shared.Interfaces;
 
-namespace IG.SimpleStateWithActions.StateEngineShared
+namespace StateEngine4net.Shared
 {
     public class StateTransitionValidator<TEntity, TState> : StateTransition<TEntity, TState>, IStateTransitionValidator<TEntity, TState>
         where TEntity : class, IStatedEntity<TState>, new()

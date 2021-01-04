@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using IG.SimpleStateWithActions.StateEngineShared.Exceptions;
-using IG.SimpleStateWithActions.StateEngineShared.Interfaces;
+using StateEngine4net.Shared.Exceptions;
+using StateEngine4net.Shared.Interfaces;
 
-namespace IG.SimpleStateWithActions.StateEngineShared
+namespace StateEngine4net.Shared
 {
     public static class StateEngineExtensions
     {

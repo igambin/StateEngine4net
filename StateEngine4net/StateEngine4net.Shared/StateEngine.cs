@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using IG.SimpleStateWithActions.StateEngineShared.Interfaces;
+using StateEngine4net.Shared.Interfaces;
 
-namespace IG.SimpleStateWithActions.StateEngineShared
+namespace StateEngine4net.Shared
 {
     public abstract class StateEngine<TEntity, TState> : IStateEngine<TEntity, TState>
         where TEntity : class, IStatedEntity<TState>, new()

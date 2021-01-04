@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using IG.SimpleStateWithActions.StateEngineShared.Interfaces;
+using StateEngine4net.Shared.Interfaces;
 
-namespace IG.SimpleStateWithActions.StateEngineShared
+namespace StateEngine4net.Shared
 {
     public class StateTransitionBuilder<TEntity, TState> : StateTransition<TEntity, TState>, IStateTransitionBuilder<TEntity, TState>
         where TEntity : class, IStatedEntity<TState>, new()

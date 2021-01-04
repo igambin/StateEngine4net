@@ -1,7 +1,7 @@
 using System;
 using System.Linq.Expressions;
 
-namespace IG.SimpleStateWithActions.StateEngineShared.Interfaces
+namespace StateEngine4net.Shared.Interfaces
 {
     public interface ITechnicalErrorState<TState>
     {

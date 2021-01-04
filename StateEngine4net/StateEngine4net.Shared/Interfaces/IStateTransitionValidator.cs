@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace IG.SimpleStateWithActions.StateEngineShared.Interfaces
+namespace StateEngine4net.Shared.Interfaces
 {
     public interface IStateTransitionValidator<TEntity, TState> : IStateTransition<TEntity, TState>
         where TEntity : IStatedEntity<TState>, new()

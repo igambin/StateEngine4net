@@ -1,8 +1,8 @@
 ﻿using System;
-using IG.SimpleStateWithActions.StateEngineShared.Exceptions;
-using IG.SimpleStateWithActions.StateEngineShared.Interfaces;
+using StateEngine4net.Shared.Exceptions;
+using StateEngine4net.Shared.Interfaces;
 
-namespace IG.SimpleStateWithActions.StateEngineShared
+namespace StateEngine4net.Shared
 {
     public class StateTransitionRunner<TEntity, TState> : StateTransition<TEntity, TState>, IStateTransitionRunner<TEntity, TState>
         where TEntity : class, IStatedEntity<TState>, new()

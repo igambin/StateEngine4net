@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace IG.SimpleStateWithActions.StateEngineShared.Exceptions
+namespace StateEngine4net.Shared.Exceptions
 {
     public static class ExceptionExtensions
     {

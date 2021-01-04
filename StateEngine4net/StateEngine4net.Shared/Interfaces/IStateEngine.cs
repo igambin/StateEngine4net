@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace IG.SimpleStateWithActions.StateEngineShared.Interfaces
+namespace StateEngine4net.Shared.Interfaces
 {
     public interface IStateEngine<TEntity, TState>
         where TEntity : IStatedEntity<TState>, new()
