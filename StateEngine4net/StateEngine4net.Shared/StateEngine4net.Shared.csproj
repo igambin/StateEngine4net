@@ -1,7 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageId>ig.StateEngine4net</PackageId>
+    <Authors>Ingo Gambin</Authors>
+    <Product>StateEngine4net</Product>
+    <Description>Library that includes a state engine framework and a code generation template using that framework</Description>
+    <RepositoryUrl>https://github.com/igambin/StateEngine4net</RepositoryUrl>
+    <PackageTags>state engine transition stateengine transitions</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Copyright />
   </PropertyGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
 
 </Project>
