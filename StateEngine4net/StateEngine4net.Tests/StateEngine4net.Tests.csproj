@@ -7,14 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\StateEngine4net.Shared\Template\StateEngineTemplate.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>StateEngineTemplate.tt</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="NUnit" Version="3.12.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.16.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
@@ -29,11 +21,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="StateEngines\" />
+    <Compile Update="StateEngines\StateEngineTemplate.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>StateEngineTemplate.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\StateEngine4net.Shared\Template\StateEngineTemplate.tt" Link="StateEngines\StateEngineTemplate.tt">
+    <None Update="StateEngines\StateEngineTemplate.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>StateEngineTemplate.cs</LastGenOutput>
     </None>

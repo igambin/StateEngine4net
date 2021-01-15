@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using StateEngine4net.Shared.Interfaces;
-using StateEngine4net.Tests.StateEngines;
+using StateEngine4net.Tests.StateEngine;
 
 namespace StateEngine4net.Tests.TestModel
 {

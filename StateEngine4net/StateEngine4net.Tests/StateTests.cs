@@ -4,7 +4,7 @@ using NUnit.Framework;
 using StateEngine4net.Shared;
 using StateEngine4net.Shared.Exceptions;
 using StateEngine4net.Shared.Interfaces;
-using StateEngine4net.Tests.StateEngines;
+using StateEngine4net.Tests.StateEngine;
 
 namespace StateEngine4net.Tests
 {
@@ -23,10 +23,10 @@ namespace StateEngine4net.Tests
         }
 
         [Test]
-        public void T_ErrorStateName()
+        public void TechnicalErrorStateName()
         {
-            var state = new StatedTestObjectStates.T_Error();
-            Assert.AreEqual("T_Error", state.ToString());
+            var state = new StatedTestObjectStates.TechnicalError();
+            Assert.AreEqual("TechnicalError", state.ToString());
         }
 
         [Test]
@@ -40,18 +40,7 @@ namespace StateEngine4net.Tests
         public void StateCanThrowTransitionFailedException()
         {
             var state = new StatedTestObjectStates.Initial();
-            Assert.Throws<TransitionFailedException>(() => state.FailedTransition("Test"));
-        }
-
-        [Test]
-        public void StateCanCreateT_ErrorState()
-        {
-            var state = new StatedTestObjectStates.Initial();
-            Expression<Func<IStatedTestObjectState, IStatedTestObjectState>> transition = s => s.Cancel;
-            var errorState = (ITechnicalErrorState<IStatedTestObjectState>)state.T_Error(state, transition, null);
-            Assert.AreEqual(state, errorState.PreviousState);
-            Assert.AreEqual(transition, errorState.AttemptedTransition);
-            Assert.IsNull(errorState.Exception);
+            Assert.Throws<TransitionFailedException>(() => state.FaíledTransition("Test"));
         }
 
     }

@@ -1,19 +1,20 @@
 ﻿using System;
+using System.Threading.Tasks;
 using StateEngine4net.Shared.Exceptions;
 using StateEngine4net.Shared.Interfaces;
 
 namespace StateEngine4net.Shared
 {
-    public class StateTransitionRunner<TEntity, TState> : StateTransition<TEntity, TState>, IStateTransitionRunner<TEntity, TState>
+    public class StateTransitionRunner<TEntity, TState, TStateEnum> : StateTransition<TEntity, TState, TStateEnum>, IStateTransitionRunner<TEntity, TState, TStateEnum>
         where TEntity : class, IStatedEntity<TState>, new()
-        where TState : IState<TState>
+        where TState : IState<TState, TStateEnum>
     {
 
-        public StateTransitionRunner(IStateTransitionValidator<TEntity, TState> validator, Func<TEntity, bool> preCondition = null)
+        public StateTransitionRunner(IStateTransitionValidator<TEntity, TState, TStateEnum> validator, Func<TEntity, bool> preCondition = null)
         {
-            StatedEntity = validator.StatedEntity;
-            Transitions = validator.Transitions;
-            TransitionToInvoke = validator.TransitionToInvoke;
+            StatedEntity = validator?.StatedEntity;
+            Transitions = validator?.Transitions;
+            TransitionToInvoke = validator?.TransitionToInvoke;
             PreCondition = preCondition;
         }
 
@@ -31,27 +32,29 @@ namespace StateEngine4net.Shared
             }
         } 
 
-        public IStateTransitionRunner<TEntity, TState> OnSuccess(Action onSuccess)
+
+
+        public IStateTransitionRunner<TEntity, TState, TStateEnum> OnSuccess(Action<TEntity, IState<TState, TStateEnum>> onSuccess)
         {
             ActionOnSuccess = onSuccess;
             return this;
         }
 
-        public IStateTransitionRunner<TEntity, TState> OnFailed(Action onFailed)
+        public IStateTransitionRunner<TEntity, TState, TStateEnum> OnFailed(Action<TEntity, IState<TState, TStateEnum>> onFailed)
         {
             ActionOnFailed = onFailed;
             return this;
         }
 
-        public IStateTransitionRunner<TEntity, TState> OnError(Action<Exception> onError)
+        public IStateTransitionRunner<TEntity, TState, TStateEnum> OnError(Action<TEntity, IState<TState, TStateEnum>> onError)
         {
             ActionOnError = onError;
             return this;
         }
 
-        private Transition<TEntity, TState> GetRequestedTransition => Transitions.FindTransition(StatedEntity, TransitionToInvoke);
+        private Transition<TEntity, TState, TStateEnum> GetRequestedTransition => Transitions.FindTransition(StatedEntity, TransitionToInvoke);
 
-        public TState Execute()
+        public async Task<TState> Execute()
         {
             var previousState = StatedEntity.State;
             if (TransitionToInvoke == null) throw new TransitionNotSpecifiedException();
@@ -60,44 +63,58 @@ namespace StateEngine4net.Shared
             {
                 var transition = GetRequestedTransition;
 
-                if (!(PreCondition?.Invoke(StatedEntity)??true))
+                if (!IsPreconditionOk)
                 {
-                    throw new TransitionConstraintFailedException(transition.StateTransitionOnSuccess.TransitionName(),
+                    throw new TransitionConstraintFailedException(transition.StateTransitionOnSuccess.TransitionName<TState, TStateEnum>(),
                         $"{previousState}");
                 }
 
-                var transitionSuccessful = transition.OnTransitioning?.Invoke(StatedEntity) ?? true;
-
-                if(transitionSuccessful)
+                IsTransitionSuccessful = true;
+                if (transition.OnTransitioning != null)
                 {
-                    ActionOnSuccess?.Invoke();
+                    IsTransitionSuccessful = await transition.OnTransitioning.Invoke(StatedEntity).ConfigureAwait(false);
+                }
+
+                if(IsTransitionSuccessful)
+                {
                     StatedEntity.State = transition.StateTransitionOnSuccess.Compile()(StatedEntity.State);
+                    ActionOnSuccess?.Invoke(StatedEntity, StatedEntity.State);
                     return StatedEntity.State;
                 }
 
                 if (transition.OnTransitionFailed == null)
                 {
-                    throw new TransitionFailedException(transition.StateTransitionOnSuccess.TransitionName(),
+                    throw new TransitionFailedException(transition.StateTransitionOnSuccess.TransitionName<TState, TStateEnum>(),
                         $"{previousState}");
                 }
 
-                var rollbackSuccessful = transition.OnTransitionFailed?.Invoke(StatedEntity) ?? false;
-                if (rollbackSuccessful)
+                IsRollbackSuccessful = false;
+                if (transition.OnTransitionFailed != null)
                 {
-                    ActionOnFailed?.Invoke();
+                    IsRollbackSuccessful  = await transition.OnTransitionFailed.Invoke(StatedEntity).ConfigureAwait(false);
+                }
+
+                if (IsRollbackSuccessful )
+                {
                     StatedEntity.State = transition.StateTransitionOnFailed.Compile()(StatedEntity.State);
+                    ActionOnFailed?.Invoke(StatedEntity, StatedEntity.State);
                     return StatedEntity.State;
                 }
                 throw new TransitionRollbackFailedException(
-                    transition.StateTransitionOnFailed?.TransitionName() ?? "[rollback undefined]", $"{previousState}");
+                    transition.StateTransitionOnFailed?.TransitionName<TState, TStateEnum>() ?? "[rollback undefined]", $"{previousState}");
             }
             catch (Exception ex)
             {
-                ActionOnError?.Invoke(ex);
-                StatedEntity.State = StatedEntity.State.T_Error(previousState, TransitionToInvoke, ex);
+                StatedEntity.State = StatedEntity.State.TechnicalError();
+                StatedEntity.State.Init(previousState, TransitionToInvoke, ex);
+                ActionOnError?.Invoke(StatedEntity, StatedEntity.State);
                 return StatedEntity.State;
             }
 
         }
+
+        public bool IsTransitionSuccessful { get; private set; }
+        public bool IsRollbackSuccessful { get; private set; }
+        public bool IsPreconditionOk => PreCondition?.Invoke(StatedEntity) ?? true;
     }
 }

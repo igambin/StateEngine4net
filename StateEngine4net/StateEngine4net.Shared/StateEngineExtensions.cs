@@ -8,43 +8,43 @@ namespace StateEngine4net.Shared
 {
     public static class StateEngineExtensions
     {
-        public static string TransitionName<TState>(this Expression<Func<TState, TState>> transition)
-            where TState : IState<TState>
+        public static string TransitionName<TState, TStateEnum>(this Expression<Func<TState, TState>> transition)
+            where TState : IState<TState, TStateEnum>
         {
-            var transitionMember = transition.Body as MemberExpression;
-            return transitionMember.Member.Name;
+            var transitionMember = transition?.Body as MemberExpression;
+            return transitionMember?.Member.Name ?? "[undefined member]";
         }
 
-        public static string ActualStateName<TEntity, TState>(this TEntity entity)
+        public static string ActualStateName<TEntity, TState, TStateEnum>(this TEntity entity)
             where TEntity : IStatedEntity<TState>, new()
-            where TState : IState<TState> 
+            where TState : IState<TState, TStateEnum> 
             => $"{entity.State}";
 
-        public static Transition<TEntity, TState> FindTransition<TEntity, TState>(
-            this List<Transition<TEntity, TState>> transitions, 
+        public static Transition<TEntity, TState, TStateEnum> FindTransition<TEntity, TState, TStateEnum>(
+            this List<Transition<TEntity, TState, TStateEnum>> transitions, 
             TEntity entity, 
             Expression<Func<TState, TState>> transition
         )
             where TEntity : IStatedEntity<TState>, new()
-            where TState : IState<TState>
+            where TState : IState<TState, TStateEnum>
         {
-            Transition<TEntity, TState> requestedTransition = default;
-            MemberExpression needleMember = null;
+            Transition<TEntity, TState, TStateEnum> requestedTransition = default;
+            MethodCallExpression needleMember = null;
             try 
             {
                 var needleType = entity.State.GetType();
-                needleMember = transition.Body as MemberExpression;
+                needleMember = transition?.Body as MethodCallExpression;
                 if (needleMember == null)
                 {
                     throw new TransitionFailedException($"Transition '{transition?.Body.ToString() ?? "[null]"}' failed on {typeof(TEntity)}");
                 }
 
-                transitions.ForEach(t =>
+                transitions?.ForEach(t =>
                 {
-                    var transitionMember = t.StateTransitionOnSuccess.Body as MemberExpression;
+                    var transitionMember = t.StateTransitionOnSuccess.Body as MethodCallExpression;
                     if (needleType == t.From.GetType()
-                        && needleMember.Member.Name == transitionMember.Member.Name
-                        && needleMember.Member.ReflectedType == transitionMember.Member.ReflectedType)
+                        && needleMember.Method.Name == (transitionMember?.Method.Name ?? "[undefined member]")
+                        && needleMember.Method.ReflectedType == transitionMember?.Method.ReflectedType)
                     {
                         requestedTransition = t;
                     }
@@ -57,7 +57,7 @@ namespace StateEngine4net.Shared
 
             if (requestedTransition == default)
             {
-                throw new UndefinedTransitionException(needleMember.Member.Name, entity.State.GetType().Name);
+                throw new UndefinedTransitionException(needleMember.Method.Name, entity.State.GetType().Name);
             }
 
             return requestedTransition;

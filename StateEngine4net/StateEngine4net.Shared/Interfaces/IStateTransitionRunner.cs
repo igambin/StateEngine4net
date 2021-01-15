@@ -1,15 +1,19 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace StateEngine4net.Shared.Interfaces
 {
-    public interface IStateTransitionRunner<TEntity, TState> : IStateTransition<TEntity, TState>
+    public interface IStateTransitionRunner<TEntity, TState, TStateEnum> : IStateTransition<TEntity, TState, TStateEnum>
         where TEntity : IStatedEntity<TState>, new()
-        where TState : IState<TState>
+        where TState : IState<TState, TStateEnum>
     {
         bool IsTransitionAllowed();
-        IStateTransitionRunner<TEntity, TState> OnError(Action<Exception> onError);
-        IStateTransitionRunner<TEntity, TState> OnSuccess(Action onSuccess);
-        IStateTransitionRunner<TEntity, TState> OnFailed(Action onFailed);
-        TState Execute();
+        IStateTransitionRunner<TEntity, TState, TStateEnum> OnError(Action<TEntity, IState<TState, TStateEnum>> onError);
+        IStateTransitionRunner<TEntity, TState, TStateEnum> OnSuccess(Action<TEntity, IState<TState, TStateEnum>> onSuccess);
+        IStateTransitionRunner<TEntity, TState, TStateEnum> OnFailed(Action<TEntity, IState<TState, TStateEnum>> onFailed);
+        Task<TState> Execute();
+        bool IsTransitionSuccessful { get; }
+        bool IsRollbackSuccessful { get; }
+        bool IsPreconditionOk { get; }
     }
 }
