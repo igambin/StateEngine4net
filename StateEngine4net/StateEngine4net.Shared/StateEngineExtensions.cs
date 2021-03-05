@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using StateEngine4net.Shared.Exceptions;
-using StateEngine4net.Shared.Interfaces;
+using StateEngine4net.Core.Exceptions;
+using StateEngine4net.Core.Interfaces;
+using StateEngine4net.Core.Models;
 
-namespace StateEngine4net.Shared
+namespace StateEngine4net.Core
 {
     public static class StateEngineExtensions
     {
@@ -20,16 +21,16 @@ namespace StateEngine4net.Shared
             where TState : IState<TState, TStateEnum> 
             => $"{entity.State}";
 
-        public static Transition<TEntity, TState, TStateEnum> FindTransition<TEntity, TState, TStateEnum>(
-            this List<Transition<TEntity, TState, TStateEnum>> transitions, 
+        public static TransitionDefinition<TEntity, TState, TStateEnum> FindTransition<TEntity, TState, TStateEnum>(
+            this List<TransitionDefinition<TEntity, TState, TStateEnum>> transitions, 
             TEntity entity, 
             Expression<Func<TState, TState>> transition
         )
             where TEntity : IStatedEntity<TState>, new()
             where TState : IState<TState, TStateEnum>
         {
-            Transition<TEntity, TState, TStateEnum> requestedTransition = default;
-            MethodCallExpression needleMember = null;
+            TransitionDefinition<TEntity, TState, TStateEnum> requestedTransition = default;
+            MethodCallExpression needleMember;
             try 
             {
                 var needleType = entity.State.GetType();

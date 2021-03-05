@@ -7,13 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="LightInject" Version="6.4.0" />
     <PackageReference Include="NUnit" Version="3.12.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.16.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\StateEngine4net.Shared\StateEngine4net.Shared.csproj" />
+    <ProjectReference Include="..\StateEngine4net.Shared\StateEngine4net.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,18 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="StateEngines\StateEngineTemplate.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>StateEngineTemplate.tt</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="StateEngines\StateEngineTemplate.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>StateEngineTemplate.cs</LastGenOutput>
-    </None>
+    <Folder Include="StateEngines\" />
+    <Folder Include="TestModel\TransitionHandlers\" />
   </ItemGroup>
 
 </Project>

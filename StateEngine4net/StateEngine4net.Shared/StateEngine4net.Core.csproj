@@ -19,6 +19,11 @@
 
   <ItemGroup>
     <Compile Update="Template\StateEngineTemplate.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>StateEngineTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Template\StateEngineTemplate.cs">
       <DependentUpon>StateEngineTemplate.tt</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -27,9 +32,24 @@
 
   <ItemGroup>
     <None Update="Template\StateEngineTemplate.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>StateEngineTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="Template\StateEngineTemplate.tt">
       <LastGenOutput>StateEngineTemplate.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LightInject" Version="6.4.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\StateEngine4net.Events\StateEngine4net.Events.csproj" />
   </ItemGroup>
 
 </Project>

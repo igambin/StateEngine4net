@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace StateEngine4net.Shared.Exceptions
+namespace StateEngine4net.Core.Exceptions
 {
     public static class ExceptionExtensions
     {

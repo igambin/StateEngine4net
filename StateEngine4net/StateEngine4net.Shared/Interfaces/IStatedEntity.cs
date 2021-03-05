@@ -1,4 +1,4 @@
-namespace StateEngine4net.Shared.Interfaces
+namespace StateEngine4net.Core.Interfaces
 {
     public interface IStatedEntity<TState>
     {

@@ -1,10 +1,5 @@
-using System;
-using System.Linq.Expressions;
 using NUnit.Framework;
-using StateEngine4net.Shared;
-using StateEngine4net.Shared.Exceptions;
-using StateEngine4net.Shared.Interfaces;
-using StateEngine4net.Tests.StateEngine;
+using StateEngine4net.Core.Exceptions;
 
 namespace StateEngine4net.Tests
 {

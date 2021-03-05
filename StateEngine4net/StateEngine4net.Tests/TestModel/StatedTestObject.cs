@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using StateEngine4net.Shared.Interfaces;
-using StateEngine4net.Tests.StateEngine;
+﻿using StateEngine4net.Core.Interfaces;
 
 namespace StateEngine4net.Tests.TestModel
 {

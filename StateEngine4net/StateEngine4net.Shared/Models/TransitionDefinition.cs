@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
-using StateEngine4net.Shared.Interfaces;
+using StateEngine4net.Core.Interfaces;
 
-namespace StateEngine4net.Shared
+namespace StateEngine4net.Core.Models
 {
-    public class Transition<TEntity, TState, TStateEnum>
+    public class TransitionDefinition<TEntity, TState, TStateEnum>
         where TEntity : IStatedEntity<TState>, new()
         where TState : IState<TState, TStateEnum>
     {
-        public Transition(
+        public TransitionDefinition(
               TState fromState
             , Expression<Func<TState, TState>> stateTransitionOnSuccess
-            , Func<TEntity, Task<bool>> onTransitioning
+            , Func<IStateHandler<TEntity>> onTransitioning
             , Expression<Func<TState, TState>> stateTransitionOnFailed
-            , Func<TEntity, Task<bool>> onTransitionFailed
+            , Func<IStateHandler<TEntity>> onTransitionFailed
             )
         {
             From = fromState;
@@ -27,9 +26,9 @@ namespace StateEngine4net.Shared
         public string Name => $"{From.GetType().Name}.{StateTransitionOnSuccess.TransitionName<TState, TStateEnum>()}";
         public TState From { get; }
         public Expression<Func<TState, TState>> StateTransitionOnSuccess { get; }
-        public Func<TEntity, Task<bool>> OnTransitioning { get; }
+        public Func<IStateHandler<TEntity>> OnTransitioning { get; }
         public Expression<Func<TState, TState>> StateTransitionOnFailed { get; }
-        public Func<TEntity, Task<bool>> OnTransitionFailed { get; }
+        public Func<IStateHandler<TEntity>> OnTransitionFailed { get; }
     }
 
 }
